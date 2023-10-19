@@ -17,3 +17,32 @@ seatSchema.index({ row: 1, column: 1 }, { unique: true }); // Ensure unique row 
 const Seat = mongoose.model('Seat', seatSchema);
 
 module.exports = Seat;
+
+
+
+ event.reservations.push({
+      seats: seatsToBook,
+      price: event.price,
+      total,
+    });
+
+
+  reservations: [
+    {
+      user: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+      seats: [[Number]],
+      price: Number,
+      total: Number,
+    },
+  ],
+
+  eventSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "user",
+    select: "name",
+  });
+  next();
+});

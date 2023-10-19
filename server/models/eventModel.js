@@ -4,6 +4,7 @@ const eventSchema = new mongoose.Schema({
   eventName: String,
   price: Number,
   seatsAvailable: Number,
+  location: String,
   seats: {
     type: [[Number]],
     default: [
