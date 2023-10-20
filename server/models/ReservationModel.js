@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const reservationSchema = new mongoose.Schema({
   event: {
@@ -14,10 +14,10 @@ const reservationSchema = new mongoose.Schema({
   total: Number,
 });
 
-eventSchema.pre(/^find/, function (next) {
+reservationSchema.pre(/^find/, function (next) {
   this.populate({
     path: "event",
-    select: "eventName",
+    select: "name",
   });
   next();
 });
@@ -27,4 +27,4 @@ const Reservation = mongoose.model(
   reservationSchema
 );
 
-module.exports = Reservation;
+export default Reservation;

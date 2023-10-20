@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { promisify } from "util";
 
 export const signup = async (req, res) => {
   console.log(req.body);
@@ -73,11 +74,6 @@ export const verifyToken = async (req, res, next) => {
       token = token.slice(7, token.length).trimLeft();
     }
 
-    // const verified = jwt.verify(
-    //   token,
-    //   process.env.JWT_SECRET
-    // );
-    // 2) Verification token
     const decoded = await promisify(jwt.verify)(
       token,
       process.env.JWT_SECRET

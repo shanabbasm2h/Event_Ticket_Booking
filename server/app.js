@@ -11,6 +11,7 @@ import { fileURLToPath } from "url";
 
 import userRoute from "./routes/userRoute.js";
 import eventRoute from "./routes/eventRoute.js";
+import reservationRoute from "./routes/reservationRoute.js";
 // CONFIGURATIONS
 
 const __filename = fileURLToPath(import.meta.url);
@@ -47,6 +48,7 @@ const upload = multer({ storage });
 
 app.use("/user", userRoute);
 app.use("/event", eventRoute);
+app.use("/reservation", reservationRoute);
 
 const PORT = process.env.PORT || 6001;
 const DB = process.env.MONGO_URL.replace(
