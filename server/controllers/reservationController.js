@@ -41,7 +41,6 @@ export const cancelBookedSeats = async (req, res) => {
         message: "No event found",
       });
 
-    //   console.log(seat);
     const seatToBeCanceled = reservation.seats.filter(
       (existingSeat) => {
         const [row, col] = existingSeat;
@@ -84,7 +83,6 @@ export const cancelBookedSeats = async (req, res) => {
       reservation,
     });
   } catch (err) {
-    console.log("shan");
     res.status(404).json({ error: err.message });
   }
 };
