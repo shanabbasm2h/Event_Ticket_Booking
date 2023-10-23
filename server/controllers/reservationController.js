@@ -23,7 +23,7 @@ export const getUserReservations = async (req, res) => {
 export const cancelBookedSeats = async (req, res) => {
   try {
     const { reservationId } = req.params;
-    const { seats } = req.body;
+    const { seat } = req.body;
     const reservation = await Reservation.findById(
       reservationId
     );
@@ -41,16 +41,33 @@ export const cancelBookedSeats = async (req, res) => {
         message: "No event found",
       });
 
-    reservation.seats = reservation.seats.filter(
+    //   console.log(seat);
+    const seatToBeCanceled = reservation.seats.filter(
       (existingSeat) => {
         const [row, col] = existingSeat;
-        if (event.seats[row][col] === 1) {
+        if (
+          seat[0] === row &&
+          seat[1] === col &&
+          event.seats[row][col] === 1
+        ) {
           event.seats[row][col] = 0;
+
           return false;
         }
         return true;
       }
     );
+    if (
+      seatToBeCanceled.length === reservation.seats.length
+    )
+      return res.status(404).json({
+        status: "fail",
+        message: "Unable to cancel booked seats",
+      });
+    event.availableSeats = event.availableSeats + 1;
+    event.bookedSeats = event.bookedSeats - 1;
+    await event.save();
+    reservation.seats = seatToBeCanceled;
     reservation.total =
       reservation.seats.length * event.price;
 
@@ -67,6 +84,7 @@ export const cancelBookedSeats = async (req, res) => {
       reservation,
     });
   } catch (err) {
+    console.log("shan");
     res.status(404).json({ error: err.message });
   }
 };

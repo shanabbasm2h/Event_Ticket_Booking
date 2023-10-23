@@ -14,36 +14,45 @@ export const bookSeat = async (req, res) => {
         .json({ message: "Event not found" });
     }
 
-    const seatsToBook = seats.map((seat) => {
+    const bookedSeats = [];
+
+    seats.forEach((seat) => {
       const [row, col] = seat;
       if (event.seats[row][col] === 0) {
         event.seats[row][col] = 1;
-        return seat;
+      } else {
+        bookedSeats.push(seat);
       }
     });
-    if (seatsToBook[0] === undefined) {
-      return res
-        .status(400)
-        .json({ message: "Seats are not available" });
-    }
 
-    const total = seatsToBook.length * event.price;
+    if (bookedSeats.length > 0) {
+      return res.status(400).json({
+        message:
+          "Some of the selected seats are already booked",
+        bookedSeats,
+      });
+    }
+    event.availableSeats =
+      event.availableSeats - seats.length;
+    event.bookedSeats = event.bookedSeats + seats.length;
+
+    const total = seats.length * event.price;
 
     const updatedEvent = await event.save();
 
-    const reservation = await Reservation.findOne({
+    let reservation = await Reservation.findOne({
       user: userId,
       event: eventId,
     });
     if (reservation) {
-      reservation.seats.push(...seatsToBook);
+      reservation.seats.push(...seats);
       reservation.total =
         reservation.seats.length * event.price;
     } else {
-      const reservation = new Reservation({
+      reservation = new Reservation({
         event: updatedEvent.id,
         user: userId, // User's ID
-        seats: seatsToBook,
+        seats: seats,
         price: event.price,
         total: total,
       });
@@ -103,10 +112,9 @@ export const getEvents = async (req, res) => {
   try {
     const { location } = req.params;
     if (location) {
-      //   const { location } = req.body;
       const events = await Event.find(
-        { location },
-        { name: 1, price: 1 }
+        { location: location },
+        { seats: 0 }
       );
       if (!events)
         return res.status(404).json({
@@ -126,10 +134,7 @@ export const getAllEventsLocation = async (req, res) => {
   try {
     if (req.body) {
       const { location } = req.body;
-      const events = await Event.find(
-        {},
-        { location: 1, _id: 0 }
-      );
+      const events = await Event.distinct("location");
       if (!events)
         return res.status(404).json({
           status: "fail",
