@@ -4,6 +4,7 @@ const eventSchema = new mongoose.Schema({
   name: String,
   price: Number,
   location: String,
+  image: String,
   bookedSeats: { type: Number, default: 0 },
   availableSeats: { type: Number, default: 80 },
   seats: {

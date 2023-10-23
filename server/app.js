@@ -12,6 +12,8 @@ import { fileURLToPath } from "url";
 import userRoute from "./routes/userRoute.js";
 import eventRoute from "./routes/eventRoute.js";
 import reservationRoute from "./routes/reservationRoute.js";
+
+import { createEvent } from "./controllers/eventController.js";
 // CONFIGURATIONS
 
 const __filename = fileURLToPath(import.meta.url);
@@ -45,6 +47,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
+router.post("event/", upload.single("image"), createEvent);
 
 app.use("/user", userRoute);
 app.use("/event", eventRoute);
