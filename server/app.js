@@ -47,7 +47,11 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
-router.post("event/", upload.single("image"), createEvent);
+app.post(
+  "/event/admin",
+  upload.single("picture"),
+  createEvent
+);
 
 app.use("/user", userRoute);
 app.use("/event", eventRoute);

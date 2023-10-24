@@ -9,6 +9,10 @@ const reservationSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
+  paid: {
+    type: Boolean,
+    default: false,
+  },
   seats: [[Number]],
   price: Number,
   total: Number,
@@ -17,7 +21,7 @@ const reservationSchema = new mongoose.Schema({
 reservationSchema.pre(/^find/, function (next) {
   this.populate({
     path: "event",
-    select: "name",
+    select: "name image",
   });
   next();
 });

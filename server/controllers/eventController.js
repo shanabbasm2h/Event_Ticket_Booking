@@ -1,84 +1,14 @@
 import Event from "./../models/eventModel.js";
 import Reservation from "../models/reservationModel.js";
 
-export const bookSeat = async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const { seats } = req.body;
-    const userId = req.user.id;
-    const event = await Event.findById(eventId);
-
-    if (!event) {
-      return res
-        .status(404)
-        .json({ message: "Event not found" });
-    }
-
-    const bookedSeats = [];
-
-    seats.forEach((seat) => {
-      const [row, col] = seat;
-      if (event.seats[row][col] === 0) {
-        event.seats[row][col] = 1;
-      } else {
-        bookedSeats.push(seat);
-      }
-    });
-
-    if (bookedSeats.length > 0) {
-      return res.status(400).json({
-        message:
-          "Some of the selected seats are already booked",
-        bookedSeats,
-      });
-    }
-    event.availableSeats =
-      event.availableSeats - seats.length;
-    event.bookedSeats = event.bookedSeats + seats.length;
-
-    const total = seats.length * event.price;
-
-    const updatedEvent = await event.save();
-
-    let reservation = await Reservation.findOne({
-      user: userId,
-      event: eventId,
-    });
-    if (reservation) {
-      reservation.seats.push(...seats);
-      reservation.total =
-        reservation.seats.length * event.price;
-    } else {
-      reservation = new Reservation({
-        event: updatedEvent.id,
-        user: userId, // User's ID
-        seats: seats,
-        price: event.price,
-        total: total,
-      });
-    }
-
-    const newReservation = await reservation.save();
-
-    return res.status(200).json({
-      message: "Seats booked successfully",
-      updatedEvent,
-      newReservation,
-    });
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error" });
-  }
-};
-
 export const createEvent = async (req, res) => {
   try {
-    const { name, price, location, seatLayout } = req.body;
-    const seats = seatLayout.map((count) =>
-      new Array(count).fill(0)
-    );
+    const { name, price, location, image, seatLayout } =
+      req.body;
+    const seats = seatLayout
+      .split(",")
+      .map((count) => new Array(parseInt(count)).fill(0));
+
     const countSeats = seats.reduce(
       (currentCount, row) => {
         row.forEach((seatStatus) => {
@@ -96,6 +26,7 @@ export const createEvent = async (req, res) => {
       name,
       price,
       location,
+      image,
       seats,
       availableSeats: countSeats.availableSeats,
       bookedSeats: countSeats.bookSeats,
