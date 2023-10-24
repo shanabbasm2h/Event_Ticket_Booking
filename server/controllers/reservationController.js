@@ -1,5 +1,12 @@
+import dotenv from "dotenv";
+import Stripe from "stripe";
+
 import Reservation from "../models/reservationModel.js";
 import Event from "../models/eventModel.js";
+
+dotenv.config();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 export const getUserReservations = async (req, res) => {
   try {
     const { id } = req.user;
@@ -85,4 +92,136 @@ export const cancelBookedSeats = async (req, res) => {
   } catch (err) {
     res.status(404).json({ error: err.message });
   }
+};
+
+export const bookSeat = async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const { seats } = req.body;
+    const userId = req.user.id;
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res
+        .status(404)
+        .json({ message: "Event not found" });
+    }
+
+    const bookedSeats = [];
+
+    seats.forEach((seat) => {
+      const [row, col] = seat;
+      if (event.seats[row][col] === 0) {
+        event.seats[row][col] = 1;
+      } else {
+        bookedSeats.push(seat);
+      }
+    });
+
+    if (bookedSeats.length > 0) {
+      return res.status(400).json({
+        message:
+          "Some of the selected seats are already booked",
+        bookedSeats,
+      });
+    }
+    event.availableSeats =
+      event.availableSeats - seats.length;
+    event.bookedSeats = event.bookedSeats + seats.length;
+
+    const total = seats.length * event.price;
+
+    const updatedEvent = await event.save();
+
+    let reservation = await Reservation.findOne({
+      user: userId,
+      event: eventId,
+    });
+    if (reservation) {
+      reservation.seats.push(...seats);
+      reservation.total =
+        reservation.seats.length * event.price;
+    } else {
+      reservation = new Reservation({
+        event: updatedEvent.id,
+        user: userId, // User's ID
+        seats: seats,
+        price: event.price,
+        total: total,
+      });
+    }
+
+    const newReservation = await reservation.save();
+
+    return res.status(200).json({
+      message: "Seats booked successfully",
+      updatedEvent,
+      newReservation,
+    });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error" });
+  }
+};
+
+export const getCheckoutSession = async (req, res) => {
+  try {
+    const reservation = await Reservation.findById(
+      req.params.reservationId
+    );
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      success_url: `${req.protocol}://${req.get(
+        "host"
+      )}/reservation/reservationPayment/${reservation.id}`,
+      cancel_url: `${req.protocol}://${req.get(
+        "host"
+      )}/event/${reservation.event.id}`,
+      customer_email: req.user.email,
+      client_reference_id: req.params.reservationId,
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            unit_amount: reservation.total * 100,
+            product_data: {
+              name: reservation.event.name,
+              description: `${reservation.event.name} in our country now!`,
+              images: [
+                `${req.protocol}://${req.get(
+                  "host"
+                )}/assets/${reservation.event.image}`,
+              ],
+            },
+          },
+          quantity: reservation.seats.length,
+        },
+      ],
+    });
+    res.status(200).json({
+      status: "success",
+      session,
+      image: `${req.protocol}://${req.get("host")}/assets/${
+        reservation.event.image
+      }`,
+    });
+  } catch (err) {
+    res
+      .status(404)
+      .json({ status: "fail", error: err.message });
+  }
+};
+
+export const paymentSuccess = async (req, res) => {
+  if (req.param.reservationId) {
+    const reservation = await Reservation.findByIdAndUpdate(
+      req.param.reservationId,
+      { $set: { paid: false } }
+    );
+  }
+  res.redirect(
+    `${req.protocol}://${req.get("host")}/reservation/`
+  );
 };

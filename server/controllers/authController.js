@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { promisify } from "util";
 
 export const signup = async (req, res) => {
-  console.log(req.body);
   try {
     if (req.body) {
       const { name, email, password } = req.body;
