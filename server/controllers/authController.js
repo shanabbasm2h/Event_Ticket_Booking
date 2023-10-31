@@ -17,6 +17,7 @@ export const signup = async (req, res) => {
         email,
         password: passwordHash,
       });
+      delete newUser.password;
       res.status(201).json({
         status: "success",
         newUser,
@@ -51,7 +52,7 @@ export const login = async (req, res) => {
         process.env.JWT_SECRET
       );
       delete user.password;
-      res.status(201).json({
+      res.status(200).json({
         status: "success",
         user,
         token,

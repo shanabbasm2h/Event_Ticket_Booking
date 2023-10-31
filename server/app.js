@@ -7,13 +7,18 @@ import multer from "multer";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
+import { v2 as cloudinary } from "cloudinary";
 import { fileURLToPath } from "url";
 
 import userRoute from "./routes/userRoute.js";
 import eventRoute from "./routes/eventRoute.js";
 import reservationRoute from "./routes/reservationRoute.js";
+import { verifyToken } from "./controllers/authController.js";
 
-import { createEvent } from "./controllers/eventController.js";
+import {
+  createEvent,
+  updateEvent,
+} from "./controllers/eventController.js";
 // CONFIGURATIONS
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +43,13 @@ app.use(
   express.static(path.join(__dirname, "public/assets"))
 );
 // FILE STORAGE
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET_KEY,
+});
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/assets");
@@ -51,6 +63,11 @@ app.post(
   "/event/admin",
   upload.single("picture"),
   createEvent
+);
+app.patch(
+  "/event/admin/:eventId",
+  upload.single("picture"),
+  updateEvent
 );
 
 app.use("/user", userRoute);

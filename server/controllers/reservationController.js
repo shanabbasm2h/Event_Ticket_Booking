@@ -27,6 +27,26 @@ export const getUserReservations = async (req, res) => {
   }
 };
 
+export const getOneReservation = async (req, res) => {
+  try {
+    const { reservationId } = req.params;
+    const reservation = await Reservation.findById(
+      reservationId
+    );
+    if (!reservation)
+      return res.status(404).json({
+        status: "fail",
+        message: "No reservation found",
+      });
+
+    res
+      .status(200)
+      .json({ status: "success", reservation });
+  } catch (err) {
+    res.status(404).json({ error: err.message });
+  }
+};
+
 export const cancelBookedSeats = async (req, res) => {
   try {
     const { reservationId } = req.params;
@@ -100,7 +120,7 @@ export const bookSeat = async (req, res) => {
     const { seats } = req.body;
     const userId = req.user.id;
     const event = await Event.findById(eventId);
-
+    console.log("hello this is type", typeof seats);
     if (!event) {
       return res
         .status(404)
@@ -171,21 +191,24 @@ export const getCheckoutSession = async (req, res) => {
     const reservation = await Reservation.findById(
       req.params.reservationId
     );
+    console.log(reservation.total);
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       success_url: `${req.protocol}://${req.get(
         "host"
       )}/reservation/reservationPayment/${reservation.id}`,
-      cancel_url: `${req.protocol}://${req.get(
-        "host"
-      )}/event/${reservation.event.id}`,
+      // success_url: "http://localhost:5173/home",
+      // cancel_url: `${req.protocol}://${req.get(
+      //   "host"
+      // )}/event/${reservation.event.id}`,
+      cancel_url: "http://localhost:5173/reservations",
       customer_email: req.user.email,
       client_reference_id: req.params.reservationId,
       line_items: [
         {
           price_data: {
             currency: "usd",
-            unit_amount: reservation.total * 100,
+            unit_amount: reservation.price * 100,
             product_data: {
               name: reservation.event.name,
               description: `${reservation.event.name} in our country now!`,
@@ -215,13 +238,20 @@ export const getCheckoutSession = async (req, res) => {
 };
 
 export const paymentSuccess = async (req, res) => {
-  if (req.param.reservationId) {
-    const reservation = await Reservation.findByIdAndUpdate(
-      req.param.reservationId,
-      { $set: { paid: false } }
-    );
+  try {
+    if (req.params.reservationId) {
+      const reservation =
+        await Reservation.findByIdAndUpdate(
+          req.params.reservationId,
+          { $set: { paid: true } },
+          { new: true }
+        );
+    }
+
+    res.redirect(`http://localhost:5173/reservations`);
+  } catch (err) {
+    res
+      .status(404)
+      .json({ status: "fail", error: err.message });
   }
-  res.redirect(
-    `${req.protocol}://${req.get("host")}/reservation/`
-  );
 };

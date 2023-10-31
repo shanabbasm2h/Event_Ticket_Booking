@@ -1,5 +1,6 @@
 import {
   getUserReservations,
+  getOneReservation,
   cancelBookedSeats,
   bookSeat,
   getCheckoutSession,
@@ -11,6 +12,11 @@ import express from "express";
 const router = express.Router();
 
 router.get("/", verifyToken, getUserReservations);
+router.get(
+  "/:reservationId",
+  verifyToken,
+  getOneReservation
+);
 router.get(
   "/reservationPayment/:reservationId",
   paymentSuccess
