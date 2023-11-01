@@ -1,0 +1,48 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const seatSchema = new Schema({
+  row: { type: String, required: true }, // Row label (A, B, C, ..., Z)
+  column: { type: Number, required: true }, // Column number (1, 2, 3, ..., 100)
+  status: {
+    type: String,
+    enum: ['available', 'booked'],
+    default: 'available',
+  },
+  // Other seat-related fields, e.g., seat type, price, etc.
+});
+
+seatSchema.index({ row: 1, column: 1 }, { unique: true }); // Ensure unique row and column combination
+
+const Seat = mongoose.model('Seat', seatSchema);
+
+module.exports = Seat;
+
+
+
+ event.reservations.push({
+      seats: seatsToBook,
+      price: event.price,
+      total,
+    });
+
+
+  reservations: [
+    {
+      user: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+      seats: [[Number]],
+      price: Number,
+      total: Number,
+    },
+  ],
+
+  eventSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "user",
+    select: "name",
+  });
+  next();
+});

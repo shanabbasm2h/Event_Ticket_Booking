@@ -1,0 +1,339 @@
+/* @import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities"; */
+
+/* colors 6c5f5b  */
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap");
+
+*,
+*:after,
+*:before {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+:active,
+:hover,
+:focus {
+  outline: 0 !important;
+  outline-offset: 0;
+}
+a,
+a:hover {
+  text-decoration: none;
+}
+a:hover {
+  color: var(--primary-color);
+}
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+:root {
+  --primary-color: #ed7d31;
+  --secondary-color: #6c5f5b;
+  --third-color: #4f4a45;
+  --fourth-color: #f6f1ee;
+  --white-color: #fff;
+  --text-gray: #999;
+  --text-color: #4f4a45;
+  --black-color: #000;
+  --primary-font: "Rubik", sans-serif;
+  --secondary-font: "JetBrains Mono", monospace;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--primary-font);
+  font-size: 100%;
+  font-weight: 400;
+  background-color: var(--fourth-color);
+}
+/* #root,
+.app {
+  padding: 0px;
+  margin: 0px;
+  font-family: "Rubik", sans-serif !important;
+  background-color: #f6f1ee;
+} */
+
+::-webkit-scrollbar {
+  width: 0.625rem;
+}
+::-webkit-scrollbar-track {
+  background: var(--fourth-color);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 3rem;
+  color: var(--fourth-color);
+}
+h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--third-color);
+  line-height: 3rem;
+}
+
+h4 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-transform: capitalize;
+  color: var(--third-color);
+  margin-bottom: 0.5rem;
+}
+h5 {
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--third-color);
+  margin-bottom: 0.5rem;
+}
+h6 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--third-color);
+  /* margin-bottom: 0.5rem; */
+}
+p {
+  font-size: 1rem;
+  color: var(--text-color);
+  font-weight: 400;
+  line-height: 1.2rem;
+  letter-spacing: 1px;
+}
+
+.button-primary {
+  align-items: center;
+  appearance: none;
+  background-color: var(--fourth-color);
+  border-radius: 4px;
+  border-width: 0;
+  box-shadow: rgba(45, 35, 66, 0.2) 0 2px 4px,
+    rgba(45, 35, 66, 0.15) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #36395a;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--secondary-font);
+  height: 42px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 1rem;
+  padding-right: 1.2rem;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow 0.15s, transform 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 18px;
+}
+
+.button-primary:focus {
+  box-shadow: #d6d6e7 0 0 0 1.5px inset,
+    rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+}
+
+.button-primary:hover {
+  box-shadow: rgba(45, 35, 66, 0.3) 0 4px 8px,
+    rgba(45, 35, 66, 0.2) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+  transform: translateY(-2px);
+  background-color: var(--primary-color);
+}
+
+.button-primary:active {
+  box-shadow: #d6d6e7 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+.button-secondary {
+  align-items: center;
+  appearance: none;
+  background-color: var(--primary-color);
+  border-radius: 4px;
+  border-width: 0;
+  box-shadow: rgba(45, 35, 66, 0.2) 0 2px 4px,
+    rgba(45, 35, 66, 0.15) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #36395a;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--secondary-font);
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 1rem;
+  padding-right: 1.2rem;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow 0.15s, transform 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 18px;
+}
+
+.button-secondary:focus {
+  box-shadow: #d6d6e7 0 0 0 1.5px inset,
+    rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+}
+
+.button-secondary:hover {
+  box-shadow: rgba(45, 35, 66, 0.3) 0 4px 8px,
+    rgba(45, 35, 66, 0.2) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.button-secondary:active {
+  box-shadow: #d6d6e7 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+.wrapper {
+  padding-top: 4.25rem;
+  padding-bottom: 4.25rem;
+}
+.text-content {
+  width: 70%;
+  margin: auto;
+}
+.navbar {
+  background-color: var(--third-color);
+  position: fixed;
+  left: 0;
+  z-index: 1000;
+  -webkit-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+}
+.navbar-brand {
+  color: var(--fourth-color);
+  font-weight: 500;
+}
+
+.form-img {
+  background-image: linear-gradient(
+      to right bottom,
+      rgba(237, 125, 49, 0.3),
+      rgba(108, 95, 91, 0.3)
+    ),
+    url("./assets/signup-img.jpg");
+  background-size: cover;
+}
+
+.form-font {
+  font-family: var(--secondary-font);
+}
+.card-white {
+  background-color: var(--white-color) !important;
+}
+.card-selected {
+  background-color: var(--primary-color) !important;
+}
+.border-right {
+  border-right: 1px solid #000; /* You can customize the style and color here */
+}
+.border-bottom {
+  border-bottom: 1px solid #999 !important; /* You can customize the style and color here */
+}
+.seat-icon-img {
+  height: 2rem;
+  width: 2rem;
+}
+.seat-icon-img:hover {
+  cursor: pointer;
+}
+
+.reservation-img {
+  width: 60%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 12px;
+}
+
+.home-background {
+  background-image: linear-gradient(
+      to right bottom,
+      rgba(237, 125, 49, 0.3),
+      rgba(108, 95, 91, 0.3)
+    ),
+    url("./assets/homeCover.jpg");
+  background-size: cover;
+}
+
+.containerHeight {
+  height: 100vh;
+}
+
+/* .home-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+.countries-section {
+  margin: 1.5rem;
+}
+.countries-content {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.country-card {
+  background-color: #fff;
+  width: 20rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  text-align: center;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+.country-card-img img {
+  height: 10rem;
+  width: 20rem;
+  background-size: cover;
+  border-radius: 5px 5px 0 0;
+}
+.country-card-content {
+  padding: 0.4rem;
+  color: #4f4a45;
+  letter-spacing: 0.5rem;
+}
+.country-card:hover {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px,
+    rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px,
+    rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.countries-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+  place-items: center;
+}
