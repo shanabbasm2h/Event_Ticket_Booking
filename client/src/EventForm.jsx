@@ -32,7 +32,6 @@ function EventForm({
         initialValuesEvent.seats.map((seat) => seat.length)
       );
       setSelectedRow(seatLayout.length);
-      console.log(seatLayout);
     } else {
       setSelectedRow(1);
       setSelectedSeats(0);
@@ -52,7 +51,6 @@ function EventForm({
     setSeatLayout(updatedValue);
     // }
     setSelectedSeats(event.target.value);
-    console.log(seatLayout);
   };
 
   const handleAddRow = () => {
@@ -69,7 +67,6 @@ function EventForm({
     if (selectedRow > 0)
       setSelectedRow(() => selectedRow - 1);
     const updatedValue = [...seatLayout];
-    console.log(selectedRow, updatedValue.length);
     if (selectedRow === updatedValue.length)
       updatedValue.pop();
     setSeatLayout(updatedValue);
@@ -143,8 +140,7 @@ function EventForm({
         setIsError(res.data.message);
       }
     } catch (error) {
-      // setIsError(error.data.message);
-      console.log(error);
+      setIsError(error.data.message);
     }
   }
 

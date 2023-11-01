@@ -120,7 +120,6 @@ export const bookSeat = async (req, res) => {
     const { seats } = req.body;
     const userId = req.user.id;
     const event = await Event.findById(eventId);
-    console.log("hello this is type", typeof seats);
     if (!event) {
       return res
         .status(404)
@@ -179,7 +178,6 @@ export const bookSeat = async (req, res) => {
       newReservation,
     });
   } catch (error) {
-    console.error(error);
     return res
       .status(500)
       .json({ message: "Internal server error" });
@@ -191,7 +189,6 @@ export const getCheckoutSession = async (req, res) => {
     const reservation = await Reservation.findById(
       req.params.reservationId
     );
-    console.log(reservation.total);
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       success_url: `${req.protocol}://${req.get(

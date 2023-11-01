@@ -5,7 +5,6 @@ export const createEvent = async (req, res) => {
   try {
     const { name, price, location, image, seatLayout } =
       req.body;
-    // console.log(req.body, req.file);
     const seats = seatLayout
       .split(",")
       .map((count) => new Array(parseInt(count)).fill(0));
@@ -137,7 +136,6 @@ export const updateEvent = async (req, res) => {
       req.body.bookedSeats = countSeats.bookSeats || 0;
       delete req.body.seatLayout;
     }
-    // console.log(req.body);
     const event = await Event.findOneAndUpdate(
       { _id: req.params.eventId },
       req.body,
@@ -176,7 +174,6 @@ export const getAllEvents = async (req, res) => {
 };
 
 export const deleteEvent = async (req, res) => {
-  console.log(req.params.eventId);
   const event = await Event.findByIdAndDelete(
     req.params.eventId
   );

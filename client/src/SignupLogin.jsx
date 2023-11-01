@@ -95,7 +95,6 @@ function SignupLoginForm() {
               handleBlur,
               handleChange,
               handleSubmit,
-              setFieldValue,
               resetForm,
             }) => (
               <form
