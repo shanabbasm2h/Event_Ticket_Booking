@@ -31,7 +31,6 @@ app.use(
     policy: "cross-origin",
   })
 );
-app.use(fileUpload());
 app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(
