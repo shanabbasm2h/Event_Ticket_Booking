@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import { Formik } from "formik";
 import axios from "axios";
 import eventSchema from "./eventValidation";
+import { Cloudinary } from "@cloudinary/url-gen";
 // const initialValuesEvent = {
 //   name: "",
 //   price: "",
 //   location: "",
 // };
+
 function EventForm({
   initialValuesEvent,
   type,
   setEvents,
+  selectedEvent,
 }) {
   const [seatLayout, setSeatLayout] = useState([]);
   const [deleted, setDeleted] = useState(false);
@@ -34,7 +37,7 @@ function EventForm({
       setSelectedRow(1);
       setSelectedSeats(0);
     }
-  }, [initialValuesEvent]);
+  }, [selectedEvent]);
 
   const handleSeatSelection = (event, i) => {
     setSelectedSeats(event.target.value);
@@ -72,26 +75,44 @@ function EventForm({
     setSeatLayout(updatedValue);
   }
 
+  async function transformFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      if (file) {
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+      } else {
+        resolve("");
+      }
+    });
+  }
   async function handleFormSubmit(values, onSubmitProps) {
     try {
       setIsError(null);
       SetIsSuccess(null);
-      delete values._id;
-      delete values.seats;
-      delete values.bookedSeats;
-      delete values.availableSeats;
-      delete values.image;
+      if (type === "update") {
+        delete values._id;
+        delete values.seats;
+        delete values.bookedSeats;
+        delete values.availableSeats;
+      }
+      // delete values.image;
 
       const updateSeatLayout = seatLayout.filter(
         (seat) => !isNaN(seat) && seat !== 0
       );
       let url, method;
+
+      const imageUrl = await transformFile(values.picture);
       const formData = new FormData();
+
       for (let value in values) {
         formData.append(value, values[value]);
       }
       if (values.picture && values.picture.name) {
-        formData.append("image", values.picture.name);
+        formData.append("image", imageUrl);
       }
 
       formData.append("seatLayout", updateSeatLayout);
@@ -122,7 +143,8 @@ function EventForm({
         setIsError(res.data.message);
       }
     } catch (error) {
-      setIsError(error.data.message);
+      // setIsError(error.data.message);
+      console.log(error);
     }
   }
 
@@ -158,6 +180,7 @@ function EventForm({
                   onSubmit={handleFormSubmit}
                   initialValues={initialValuesEvent}
                   validationSchema={eventSchema}
+                  enableReinitialize
                 >
                   {({
                     values,
@@ -275,7 +298,7 @@ function EventForm({
                               </div>
                               <div className='col-md-6 form-group mb-4'>
                                 <label htmlFor='seats'>
-                                  Number of Seats in Row:
+                                  Number of Seats:
                                 </label>
                                 <input
                                   type='Number'
@@ -305,21 +328,22 @@ function EventForm({
                             </div>
                           )
                         )}
-
-                        <button
-                          type='button me-3'
-                          className='btn button-secondary'
-                          onClick={handleAddRow}
-                        >
-                          Add Row
-                        </button>
-                        <button
-                          type='button'
-                          className='btn button-secondary'
-                          onClick={handleCancelRow}
-                        >
-                          Remove Row
-                        </button>
+                        <div className='d-flex gap-2'>
+                          <a
+                            type='button me-5'
+                            className='btn button-secondary'
+                            onClick={handleAddRow}
+                          >
+                            Add Row
+                          </a>
+                          <a
+                            type='button'
+                            className='btn button-secondary'
+                            onClick={handleCancelRow}
+                          >
+                            Remove Row
+                          </a>
+                        </div>
                         <div className='mb-3 mt-4'>
                           <label
                             htmlFor='formFile'
@@ -327,7 +351,13 @@ function EventForm({
                           >
                             Image:
                           </label>
-                          <p>{values.image}</p>
+                          <img
+                            src={values.image}
+                            className='img-fluid mb-3'
+                            style={{ height: "60px" }}
+                            alt='...'
+                          />
+
                           <input
                             className='form-control'
                             type='file'
@@ -344,7 +374,7 @@ function EventForm({
                             }}
                           />
                         </div>
-                        <div className='d-flex justify-content-center'>
+                        <div className='d-flex justify-content-center gap-2'>
                           <button
                             type='submit'
                             className='btn button-secondary'
@@ -353,21 +383,20 @@ function EventForm({
                               ? "Update Event"
                               : "Create Event"}
                           </button>
+                          {type === "update" && (
+                            <a
+                              className='btn button-secondary'
+                              onClick={handleDeleteEvent}
+                            >
+                              Delete Event
+                            </a>
+                          )}
                         </div>
                       </div>
                     </form>
                   )}
                 </Formik>
-                <div className='d-flex justify-content-center'>
-                  {type === "update" && (
-                    <button
-                      className='btn button-secondary mt-3'
-                      onClick={handleDeleteEvent}
-                    >
-                      Delete Event
-                    </button>
-                  )}
-                </div>
+                <div className='d-flex justify-content-center'></div>
               </div>
             </div>
           </>

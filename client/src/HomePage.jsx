@@ -84,9 +84,7 @@ function CountryCard({ image, location, onCardClick }) {
         onClick={onCardClick}
       >
         <div className='country-card-img'>
-          <img
-            src={`http://localhost:3001/assets/${image}`}
-          />
+          <img src={`${image}`} />
         </div>
         <div className='country-card-content'>
           <h5>{location}</h5>

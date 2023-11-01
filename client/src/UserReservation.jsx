@@ -154,7 +154,7 @@ function ReservationSection({
         </h4>
         {/* <div className=''></div> */}
         <img
-          src={`http://127.0.0.1:3001/assets/${reservation.event.image}`}
+          src={reservation.event.image}
           className='img-fluid rounded reservation-img'
           alt='...'
         />

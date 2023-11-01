@@ -61,7 +61,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 app.post(
   "/event/admin",
-  upload.single("picture"),
+  // upload.single("picture"),
   createEvent
 );
 app.patch(

@@ -70,6 +70,7 @@ function EventUpdate() {
               initialValuesEvent={event}
               type='update'
               setEvents={setEvents}
+              selectedEvent={event._id}
             />
           )}
         </div>

@@ -18,7 +18,7 @@ function EventCard({
       <div className='row g-0'>
         <div className='col-md-4'>
           <img
-            src={`http://localhost:3001/assets/${image}`}
+            src={image}
             className='img-fluid rounded-start h-100'
             alt='...'
           />

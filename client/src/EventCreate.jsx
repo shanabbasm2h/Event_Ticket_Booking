@@ -9,6 +9,7 @@ function EventCreate() {
     <EventForm
       initialValuesEvent={initialValuesEvent}
       type={"create"}
+      selectedEvent='0'
     />
   );
 }
