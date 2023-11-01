@@ -9,7 +9,7 @@ import morgan from "morgan";
 import path from "path";
 import { v2 as cloudinary } from "cloudinary";
 import { fileURLToPath } from "url";
-
+import fileUpload from "express-fileupload";
 import userRoute from "./routes/userRoute.js";
 import eventRoute from "./routes/eventRoute.js";
 import reservationRoute from "./routes/reservationRoute.js";
@@ -32,6 +32,7 @@ app.use(
     policy: "cross-origin",
   })
 );
+app.use(fileUpload());
 app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(
@@ -50,23 +51,46 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/assets");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
-const upload = multer({ storage });
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(req, "public/assets");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
+
+const uploadToCloud = async (req, res, next) => {
+  try {
+    // console.log(req.body);
+    if (req.body.image) {
+      const uploadRes = await cloudinary.uploader.upload(
+        req.body.image
+      );
+      req.body.image = uploadRes.url;
+      // return next();
+    }
+    return next();
+    // res.status(404).json({
+    //   status: "fail",
+    //   message: "Image Not Uploaded",
+    // });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+// const upload = multer(storage);
 app.post(
   "/event/admin",
   // upload.single("picture"),
+  uploadToCloud,
   createEvent
 );
 app.patch(
   "/event/admin/:eventId",
-  upload.single("picture"),
+  // upload.single("picture"),
+  uploadToCloud,
   updateEvent
 );
 

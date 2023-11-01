@@ -5,36 +5,36 @@ export const createEvent = async (req, res) => {
   try {
     const { name, price, location, image, seatLayout } =
       req.body;
-    console.log(req.body);
-    // const seats = seatLayout
-    //   .split(",")
-    //   .map((count) => new Array(parseInt(count)).fill(0));
+    // console.log(req.body, req.file);
+    const seats = seatLayout
+      .split(",")
+      .map((count) => new Array(parseInt(count)).fill(0));
 
-    // const countSeats = seats.reduce(
-    //   (currentCount, row) => {
-    //     row.forEach((seatStatus) => {
-    //       if (seatStatus === 0) {
-    //         currentCount.availableSeats++;
-    //       } else if (seatStatus === 1) {
-    //         currentCount.bookedSeats++;
-    //       }
-    //     });
-    //     return currentCount;
-    //   },
-    //   { availableSeats: 0, bookedSeats: 0 }
-    // );
-    // const event = await Event.create({
-    //   name,
-    //   price,
-    //   location,
-    //   image,
-    //   seats,
-    //   availableSeats: countSeats.availableSeats,
-    //   bookedSeats: countSeats.bookSeats,
-    // });
+    const countSeats = seats.reduce(
+      (currentCount, row) => {
+        row.forEach((seatStatus) => {
+          if (seatStatus === 0) {
+            currentCount.availableSeats++;
+          } else if (seatStatus === 1) {
+            currentCount.bookedSeats++;
+          }
+        });
+        return currentCount;
+      },
+      { availableSeats: 0, bookedSeats: 0 }
+    );
+    const event = await Event.create({
+      name,
+      price,
+      location,
+      image,
+      seats,
+      availableSeats: countSeats.availableSeats,
+      bookedSeats: countSeats.bookSeats,
+    });
     res
       .status(201)
-      .json({ status: "success", data: "event" });
+      .json({ status: "success", data: event });
   } catch (err) {
     res.status(404).json({ error: err.message });
   }
